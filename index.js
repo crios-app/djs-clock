@@ -8,13 +8,15 @@ const timezone = require('dayjs/plugin/timezone')
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+// cron
+var cron = require('node-cron');
+
 // discord.js
 const Discord = require('discord.js');
 const client = new Discord.Client();
 client.login(process.env.TOKEN);
 
 const getTimeEmoji = (now) => {
-  console.log(now.hour());
   if (now.hour() === 0 || now.hour() === 12) {
     return '🕛';
   } else if (now.hour() === 1 || now.hour() === 13) {
@@ -44,13 +46,17 @@ const getTimeEmoji = (now) => {
   }
 }
 
-const getTime = (time, zone) => `${getTimeEmoji(time)} ${time.format('HH:mm')} ${zone}`
+cron.schedule('*/10 * * * *', () => {
+  client.emit('customClockUpdate')
+}).start()
 
-async function getBothTimes() {
+const getTime = (time, zone) => `${getTimeEmoji(time)}${time.format('HH:mm')} ${zone}`
+
+function getBothTimes() {
   const now = dayjs()
   const time1 = dayjs(now).tz(process.env.TZ_ONE)
   const time2 = dayjs(now).tz(process.env.TZ_TWO)
-  return `${getTime(time1, process.env.TZ_ONE_NAME)}•${getTime(time2, process.env.TZ_TWO_NAME)}`
+  return `${getTime(time1, process.env.TZ_ONE_NAME)}•${time2.format('HH:mm')} ${process.env.TZ_TWO_NAME}`
 }
 
 function renameChannel(client, channel, data) {
@@ -60,9 +66,17 @@ function renameChannel(client, channel, data) {
 
 client.on('ready', () => {
   console.log("Ready")
-  setInterval(function(){client.emit('customClockUpdate')},600000)
 });
 client.on('customClockUpdate', () => {
   const data = getBothTimes()
+  console.log(data);
   renameChannel(client, process.env.CHANNELID, data)
 })
+client.on('message', message => {
+  const prefix = process.env.PREFIX 
+  if (!message.author.bot && message.content.startsWith(prefix)) {
+    const args = message.content.slice(prefix.length).trim().split(' ');
+    const command = args.shift().toLowerCase()
+    if (command === 'update') client.emit('customClockUpdate')
+    else message.channel.send('did you mean update?')
+}})
