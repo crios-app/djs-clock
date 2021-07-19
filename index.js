@@ -50,7 +50,7 @@ cron.schedule('*/10 * * * *', () => {
   client.emit('customClockUpdate')
 }).start()
 
-const getTime = (time, zone) => `${getTimeEmoji(time)}${time.format('HH:mm')} ${zone}`
+const getTime = (time, zone) => `${getTimeEmoji(time)} ${time.format('HH:mm')} ${zone}`
 
 function getBothTimes() {
   const now = dayjs()
