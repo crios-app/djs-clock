@@ -1,15 +1,12 @@
-// dotenv
 require('dotenv').config()
-
-// dayjs
-var dayjs = require('dayjs')
+const dayjs = require('dayjs')
 const utc = require('dayjs/plugin/utc')
 const timezone = require('dayjs/plugin/timezone')
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 // cron
-var cron = require('node-cron');
+const cron = require('node-cron');
 
 // discord.js
 const Discord = require('discord.js');
@@ -17,33 +14,19 @@ const client = new Discord.Client();
 client.login(process.env.TOKEN);
 
 const getTimeEmoji = (now) => {
-  if (now.hour() === 0 || now.hour() === 12) {
-    return '🕛';
-  } else if (now.hour() === 1 || now.hour() === 13) {
-    return '🕐';
-  } else if (now.hour() === 2 || now.hour() === 14) {
-    return '🕑';
-  } else if (now.hour() === 3 || now.hour() === 15) {
-    return '🕒';
-  } else if (now.hour() === 4 || now.hour() === 16) {
-    return '🕓';
-  } else if (now.hour() === 5 || now.hour() === 17) {
-    return '🕔';
-  } else if (now.hour() === 6 || now.hour() === 18) {
-    return '🕕';
-  } else if (now.hour() === 7 || now.hour() === 19) {
-    return '🕖';
-  } else if (now.hour() === 8 || now.hour() === 20) {
-    return '🕗';
-  } else if (now.hour() === 9 || now.hour() === 21) {
-    return '🕘';
-  } else if (now.hour() === 10 || now.hour() === 22) {
-    return '🕙';
-  } else if (now.hour() === 11 || now.hour() === 23) {
-    return '🕚';
-  } else {
-    return ''
-  }
+  if (now.hour() === 0 || now.hour() === 12) return '🕛';
+  else if (now.hour() === 1 || now.hour() === 13) return '🕐';
+  else if (now.hour() === 2 || now.hour() === 14) return '🕑';
+  else if (now.hour() === 3 || now.hour() === 15) return '🕒';
+  else if (now.hour() === 4 || now.hour() === 16) return '🕓';
+  else if (now.hour() === 5 || now.hour() === 17) return '🕔';
+  else if (now.hour() === 6 || now.hour() === 18) return '🕕';
+  else if (now.hour() === 7 || now.hour() === 19) return '🕖';
+  else if (now.hour() === 8 || now.hour() === 20) return '🕗';
+  else if (now.hour() === 9 || now.hour() === 21) return '🕘';
+  else if (now.hour() === 10 || now.hour() === 22) return '🕙';
+  else if (now.hour() === 11 || now.hour() === 23) return '🕚';
+  else return ''
 }
 
 cron.schedule('*/10 * * * *', () => {
@@ -64,9 +47,7 @@ function renameChannel(client, channel, data) {
     .then(channel => channel.setName(data))
 }
 
-client.on('ready', () => {
-  console.log("Ready")
-});
+client.on('ready', () => { console.log("Ready") });
 client.on('customClockUpdate', () => {
   const data = getBothTimes()
   console.log(data);
